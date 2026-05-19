@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Play } from "lucide-react";
+import { ArrowRight, Sparkles, Calculator } from "lucide-react";
 import { Dashboard } from "./Dashboard";
 
 export function Hero() {
@@ -47,15 +47,15 @@ export function Hero() {
           className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3"
         >
           <Button variant="hero" size="lg" asChild>
-            <a href="#cta">
+            <a href="https://wa.me/5547989128119?text=Ol%C3%A1!%20Vi%20o%20site%20da%20Recobra%20e%20quero%20receber%20uma%20an%C3%A1lise%20gr%C3%A1tis%20do%20meu%20restaurante." target="_blank" rel="noopener noreferrer">
               Receber análise grátis
               <ArrowRight className="w-4 h-4" />
             </a>
           </Button>
           <Button variant="soft" size="lg" asChild>
-            <a href="#como-funciona">
-              <Play className="w-4 h-4" />
-              Ver como funciona
+            <a href="#simulador">
+              <Calculator className="w-4 h-4" />
+              Simular retorno
             </a>
           </Button>
         </motion.div>

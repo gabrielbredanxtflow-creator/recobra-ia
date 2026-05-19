@@ -1,26 +1,65 @@
-import { TrendingUp, MessageCircle, Users, DollarSign, ArrowUpRight, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { TrendingUp, MessageCircle, Users, DollarSign, ArrowUpRight, Check, Activity } from "lucide-react";
+import { useCountUp } from "@/hooks/useCountUp";
 
 function Metric({
   label,
-  value,
   delta,
   icon: Icon,
+  end,
+  prefix = "",
+  suffix = "",
+  decimals = 0,
+  delay = 300,
 }: {
   label: string;
-  value: string;
   delta: string;
   icon: React.ComponentType<{ className?: string }>;
+  end: number;
+  prefix?: string;
+  suffix?: string;
+  decimals?: number;
+  delay?: number;
 }) {
+  const [liveValue, setLiveValue] = useState(0);
+  const initialCount = useCountUp({ end, duration: 1800, decimals, delay });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const interval = setInterval(() => {
+        if (Math.random() > 0.6) {
+          setLiveValue((prev) => prev + (decimals > 0 ? 0.1 : Math.floor(Math.random() * 2) + 1));
+        }
+      }, 2500);
+      return () => clearInterval(interval);
+    }, delay + 2000);
+    return () => clearTimeout(timer);
+  }, [decimals, delay]);
+
+  const value = initialCount + liveValue;
+  const formatted =
+    decimals > 0
+      ? value.toFixed(decimals).replace(".", ",")
+      : value.toLocaleString("pt-BR");
+
   return (
-    <div className="rounded-2xl border border-border/60 bg-gradient-card backdrop-blur p-5 text-left">
-      <div className="flex items-center justify-between">
+    <div className="group relative rounded-2xl border border-border/60 bg-gradient-card backdrop-blur p-5 text-left overflow-hidden transition-all duration-500 hover:border-primary/30 hover:shadow-glow-soft">
+      <motion.div
+        animate={{ x: ["-100%", "200%"] }}
+        transition={{ repeat: Infinity, duration: 3, ease: "linear", repeatDelay: 5 }}
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent w-full h-full -skew-x-12"
+      />
+      <div className="relative flex items-center justify-between">
         <span className="text-xs text-muted-foreground">{label}</span>
         <div className="w-8 h-8 rounded-lg bg-primary/10 grid place-items-center">
           <Icon className="w-4 h-4 text-primary" />
         </div>
       </div>
-      <div className="mt-3 text-2xl font-semibold tracking-tight">{value}</div>
-      <div className="mt-1 inline-flex items-center gap-1 text-xs text-[oklch(0.78_0.16_155)]">
+      <div className="relative mt-3 text-2xl font-semibold tracking-tight tabular-nums">
+        {prefix}{formatted}{suffix}
+      </div>
+      <div className="relative mt-1 inline-flex items-center gap-1 text-xs text-[oklch(0.78_0.16_155)]">
         <ArrowUpRight className="w-3 h-3" />
         {delta}
       </div>
@@ -28,106 +67,267 @@ function Metric({
   );
 }
 
-function Bar({ h, active }: { h: number; active?: boolean }) {
+function Bar({ h, active, i }: { h: number; active?: boolean; i: number }) {
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeight(h), 500 + i * 80);
+    const i2 = setInterval(() => {
+      if (active && Math.random() > 0.6) {
+        setHeight(h + (Math.random() * 8 - 4));
+      }
+    }, 2000 + i * 300);
+    return () => { clearTimeout(t); clearInterval(i2); };
+  }, [h, i, active]);
+
   return (
-    <div
-      className={`flex-1 rounded-md ${active ? "bg-gradient-primary" : "bg-muted"}`}
-      style={{ height: `${h}%` }}
-    />
+    <div className="flex-1 flex items-end h-full">
+      <motion.div
+        animate={{ height: `${Math.max(5, Math.min(100, height))}%` }}
+        transition={{ type: "spring", stiffness: 60, damping: 15 }}
+        className={`w-full rounded-md relative ${
+          active ? "bg-gradient-primary shadow-[0_0_12px_oklch(0.72_0.18_50/0.4)]" : "bg-muted"
+        }`}
+      >
+        {active && (
+          <motion.div
+            animate={{ opacity: [0.3, 0.7, 0.3] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="absolute -top-1 inset-x-0 h-2 bg-white/30 rounded-t-md blur-[2px]"
+          />
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+const NOTIFICATIONS = [
+  { id: 1, text: "Cliente voltou após 45 dias", time: "agora mesmo", icon: Users },
+  { id: 2, text: "Pedido de R$ 124 aprovado", time: "2 min atrás", icon: DollarSign },
+  { id: 3, text: "Campanha finalizada: 184 retornos", time: "5 min atrás", icon: Check },
+  { id: 4, text: "Nova campanha iniciada", time: "12 min atrás", icon: Activity },
+];
+
+function LiveNotifications() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % NOTIFICATIONS.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const notif = NOTIFICATIONS[index];
+  const Icon = notif.icon;
+
+  return (
+    <div className="absolute top-16 right-5 z-20 w-64 pointer-events-none hidden md:block">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={notif.id}
+          initial={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          exit={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex items-start gap-3 p-3 rounded-2xl bg-card/80 backdrop-blur-xl border border-primary/20 shadow-elegant"
+        >
+          <div className="w-8 h-8 shrink-0 rounded-full bg-primary/20 flex items-center justify-center relative">
+            <Icon className="w-4 h-4 text-primary" />
+            <motion.div 
+              animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="absolute inset-0 rounded-full bg-primary"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-foreground truncate">{notif.text}</p>
+            <p className="text-[10px] text-muted-foreground">{notif.time}</p>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function ChatSimulation() {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const sequence = async () => {
+      setStep(0);
+      await new Promise((r) => setTimeout(r, 1500));
+      setStep(1);
+      await new Promise((r) => setTimeout(r, 2000));
+      setStep(2);
+    };
+    sequence();
+    const interval = setInterval(sequence, 8000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="lg:col-span-2 rounded-2xl border border-border/60 bg-background/40 p-4 space-y-3 relative overflow-hidden group">
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      <div className="relative flex items-center justify-between pb-2 border-b border-border/60">
+        <div className="flex items-center gap-2">
+          <div className="relative w-8 h-8 rounded-full bg-[oklch(0.8_0.16_155)]/20 grid place-items-center">
+            <MessageCircle className="w-4 h-4 text-[oklch(0.8_0.16_155)]" />
+            <motion.span 
+              animate={{ opacity: [1, 0.3, 1] }} 
+              transition={{ repeat: Infinity, duration: 1.5 }} 
+              className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[oklch(0.8_0.16_155)] rounded-full shadow-[0_0_8px_oklch(0.8_0.16_155)]" 
+            />
+          </div>
+          <div>
+            <div className="text-xs font-medium flex items-center gap-1.5 text-foreground">
+              Disparo WhatsApp
+            </div>
+            <div className="text-[10px] text-muted-foreground">Inativos 30d · 842 contatos</div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="relative space-y-2.5 pt-1">
+        <motion.div 
+          initial={{ opacity: 0, x: -10 }} 
+          animate={{ opacity: 1, x: 0 }} 
+          transition={{ duration: 0.5 }}
+          className="bg-card rounded-2xl rounded-tl-sm p-3 text-xs leading-relaxed border border-border/40 w-[90%] shadow-sm"
+        >
+          Oi João! Sentimos sua falta 🍕 Hoje o frete é grátis nas pizzas grandes pra você voltar!
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          {step === 1 && (
+            <motion.div 
+              key="typing"
+              initial={{ opacity: 0, scale: 0.95 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }} 
+              className="flex items-center gap-1.5 text-[10px] text-muted-foreground ml-2 h-6"
+            >
+              <div className="flex gap-1">
+                <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
+                <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.15 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
+                <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.3 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
+              </div>
+              <span className="ml-1">cliente digitando...</span>
+            </motion.div>
+          )}
+          {step === 2 && (
+            <motion.div 
+              key="message"
+              initial={{ opacity: 0, y: 10, scale: 0.95 }} 
+              animate={{ opacity: 1, y: 0, scale: 1 }} 
+              transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              className="bg-primary/20 rounded-2xl rounded-tr-sm p-3 text-xs leading-relaxed ml-auto w-[85%] text-right border border-primary/20 shadow-sm"
+            >
+              Opa 👀 me manda o cardápio, vou pedir!
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="relative flex items-center justify-between pt-2 mt-2 border-t border-border/40">
+        <div className="flex items-center gap-1.5 text-[10px] text-[oklch(0.8_0.16_155)]">
+          <Check className="w-3 h-3" /> 184 respostas agora
+        </div>
+        <div className="text-[10px] text-muted-foreground flex items-center gap-1">
+          <Activity className="w-3 h-3" /> Monitorando
+        </div>
+      </div>
+    </div>
   );
 }
 
 export function Dashboard() {
   return (
-    <div className="rounded-3xl border border-border/70 bg-card/80 backdrop-blur-xl shadow-elegant overflow-hidden">
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-border/60 bg-background/40">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-destructive/70" />
-          <span className="w-2.5 h-2.5 rounded-full bg-primary/70" />
-          <span className="w-2.5 h-2.5 rounded-full bg-success/70" />
-        </div>
-        <div className="text-xs text-muted-foreground">recobra.app / dashboard</div>
-        <div className="w-12" />
-      </div>
-
-      <div className="grid md:grid-cols-3 gap-0">
-        {/* Sidebar */}
-        <div className="hidden md:flex flex-col gap-1 p-4 border-r border-border/60 text-sm">
-          {[
-            ["Visão geral", true],
-            ["Campanhas", false],
-            ["Clientes", false],
-            ["Mensagens", false],
-            ["Relatórios", false],
-          ].map(([label, active]) => (
-            <div
-              key={label as string}
-              className={`px-3 py-2 rounded-lg ${
-                active ? "bg-primary/10 text-foreground" : "text-muted-foreground"
-              }`}
-            >
-              {label}
-            </div>
-          ))}
+    <div className="relative group">
+      <div className="absolute -inset-1 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent blur-2xl opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
+      
+      <div className="relative rounded-3xl border border-border/70 bg-card/80 backdrop-blur-2xl shadow-elegant overflow-hidden">
+        <LiveNotifications />
+        
+        <div className="flex items-center justify-between px-5 py-3 border-b border-border/60 bg-background/50">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-destructive/70 shadow-[0_0_8px_var(--color-destructive)]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-primary/70 shadow-[0_0_8px_var(--color-primary)]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-success/70 shadow-[0_0_8px_var(--color-success)]" />
+          </div>
+          <div className="text-xs text-muted-foreground flex items-center gap-2">
+            recobra.app / dashboard
+          </div>
+          <div className="w-12" />
         </div>
 
-        {/* Main */}
-        <div className="md:col-span-2 p-5 md:p-6 space-y-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm text-muted-foreground">Últimos 30 dias</h3>
-              <p className="text-lg font-semibold">Performance da recuperação</p>
-            </div>
-            <span className="text-[10px] uppercase tracking-wider px-2 py-1 rounded-full bg-success/15 text-[oklch(0.8_0.16_155)]">
-              ao vivo
-            </span>
+        <div className="grid md:grid-cols-4 lg:grid-cols-5 gap-0">
+          <div className="hidden md:flex flex-col gap-1 p-4 border-r border-border/60 text-sm bg-background/20">
+            {[
+              ["Visão geral", true],
+              ["Campanhas", false],
+              ["Clientes", false],
+              ["Mensagens", false],
+              ["Relatórios", false],
+            ].map(([label, active]) => (
+              <div
+                key={label as string}
+                className={`px-3 py-2 rounded-lg transition-colors cursor-default ${
+                  active ? "bg-primary/10 text-foreground font-medium" : "text-muted-foreground hover:bg-muted/50"
+                }`}
+              >
+                {label}
+              </div>
+            ))}
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <Metric label="Mensagens enviadas" value="12.480" delta="+34%" icon={MessageCircle} />
-            <Metric label="Clientes recuperados" value="1.327" delta="+22%" icon={Users} />
-            <Metric label="Faturamento gerado" value="R$ 84.210" delta="+41%" icon={DollarSign} />
-            <Metric label="ROI estimado" value="9.4x" delta="+1.8x" icon={TrendingUp} />
-          </div>
-
-          <div className="grid lg:grid-cols-5 gap-3">
-            {/* Chart */}
-            <div className="lg:col-span-3 rounded-2xl border border-border/60 bg-background/40 p-5">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs text-muted-foreground">Faturamento recuperado / semana</span>
-                <span className="text-xs font-medium">R$ 84.210</span>
+          <div className="md:col-span-3 lg:col-span-4 p-5 md:p-6 space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm text-muted-foreground">Últimos 30 dias</h3>
+                <p className="text-lg font-semibold text-foreground">Performance da recuperação</p>
               </div>
-              <div className="flex items-end gap-2 h-32">
-                {[28, 42, 35, 58, 48, 70, 62, 84, 76, 92, 88, 96].map((h, i) => (
-                  <Bar key={i} h={h} active={i >= 8} />
-                ))}
-              </div>
-              <div className="mt-3 flex justify-between text-[10px] text-muted-foreground">
-                <span>S1</span><span>S4</span><span>S8</span><span>S12</span>
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-[oklch(0.8_0.16_155)]/10 border border-[oklch(0.8_0.16_155)]/20 shadow-[0_0_15px_oklch(0.8_0.16_155/0.15)]">
+                <motion.span 
+                  animate={{ opacity: [1, 0.4, 1] }} 
+                  transition={{ repeat: Infinity, duration: 2 }} 
+                  className="w-1.5 h-1.5 rounded-full bg-[oklch(0.8_0.16_155)]" 
+                />
+                <span className="text-[10px] uppercase tracking-wider text-[oklch(0.8_0.16_155)] font-semibold">
+                  sistema ativo
+                </span>
               </div>
             </div>
 
-            {/* WhatsApp preview */}
-            <div className="lg:col-span-2 rounded-2xl border border-border/60 bg-background/40 p-4 space-y-2">
-              <div className="flex items-center gap-2 pb-2 border-b border-border/60">
-                <div className="w-7 h-7 rounded-full bg-success/20 grid place-items-center">
-                  <MessageCircle className="w-3.5 h-3.5 text-[oklch(0.8_0.16_155)]" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+              <Metric label="Mensagens enviadas" end={12480} delta="+34%" icon={MessageCircle} delay={300} />
+              <Metric label="Clientes recuperados" end={1327} delta="+22%" icon={Users} delay={450} />
+              <Metric label="Faturamento gerado" end={84210} prefix="R$ " delta="+41%" icon={DollarSign} delay={600} />
+              <Metric label="ROI estimado" end={9.4} suffix="x" decimals={1} delta="+1.8x" icon={TrendingUp} delay={750} />
+            </div>
+
+            <div className="grid lg:grid-cols-5 gap-3 lg:gap-4">
+              <div className="lg:col-span-3 rounded-2xl border border-border/60 bg-background/40 p-5 group hover:border-border transition-colors">
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                    Faturamento recuperado / semana
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 4, ease: "linear" }} className="w-3 h-3 rounded-full border-2 border-primary border-t-transparent" />
+                    <span className="text-xs font-medium">R$ 84.210</span>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-xs font-medium">Campanha · Inativos 30d</div>
-                  <div className="text-[10px] text-muted-foreground">enviada para 842 clientes</div>
+                <div className="flex items-end gap-2 h-32">
+                  {[28, 42, 35, 58, 48, 70, 62, 84, 76, 92, 88, 96].map((h, i) => (
+                    <Bar key={i} h={h} active={i >= 8} i={i} />
+                  ))}
+                </div>
+                <div className="mt-4 flex justify-between text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
+                  <span>S1</span><span>S4</span><span>S8</span><span>Hoje</span>
                 </div>
               </div>
-              <div className="bg-card rounded-xl rounded-tl-sm p-2.5 text-xs leading-relaxed">
-                Oi João! Sentimos sua falta 🍕 Voltamos com uma pizza grande por R$ 39,90 só pra você. Válido hoje!
-              </div>
-              <div className="bg-primary/15 rounded-xl rounded-tr-sm p-2.5 text-xs leading-relaxed ml-6 text-right">
-                Quero pedir agora 🔥
-              </div>
-              <div className="flex items-center gap-1.5 pt-1 text-[10px] text-[oklch(0.8_0.16_155)]">
-                <Check className="w-3 h-3" /> 312 respostas · 184 pedidos
-              </div>
+
+              <ChatSimulation />
             </div>
           </div>
         </div>

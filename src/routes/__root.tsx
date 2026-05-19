@@ -7,6 +7,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useLenis } from "@/hooks/useLenis";
+import { MouseOrb } from "@/components/ui/MouseOrb";
 
 import appCss from "../styles.css?url";
 
@@ -96,7 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" style={{ scrollBehavior: "smooth" }}>
       <head>
         <HeadContent />
       </head>
@@ -110,9 +112,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useLenis();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <MouseOrb />
       <Outlet />
     </QueryClientProvider>
   );

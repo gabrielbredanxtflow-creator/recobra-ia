@@ -6,6 +6,7 @@ import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Results } from "@/components/landing/Results";
 import { Included } from "@/components/landing/Included";
 import { NotSpam } from "@/components/landing/NotSpam";
+import { Transition } from "@/components/landing/Transition";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
 
@@ -39,6 +40,7 @@ function Index() {
       <Results />
       <Included />
       <NotSpam />
+      <Transition />
       <FinalCTA />
       <Footer />
     </main>
