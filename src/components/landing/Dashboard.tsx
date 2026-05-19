@@ -150,10 +150,27 @@ function LiveNotifications() {
   );
 }
 
+const CONVERSATIONS = [
+  {
+    outbound: "Oi João! Sentimos sua falta 🍕 Hoje o frete é grátis nas pizzas grandes pra você voltar!",
+    inbound: "Opa 👀 me manda o cardápio, vou pedir!"
+  },
+  {
+    outbound: "Olá Maria! Faz tempo que você não pede nosso hambúrguer artesanal. Quer 15% OFF hoje?",
+    inbound: "Oi! Quero sim, qual é o cupom? 🍔"
+  },
+  {
+    outbound: "Fala Carlos! Tem novidade no cardápio de sushi. Que tal um combinado hoje com taxa zero?",
+    inbound: "Boa! Estava mesmo com vontade, vou dar uma olhada 🍣"
+  }
+];
+
 function ChatSimulation() {
   const [step, setStep] = useState(0);
+  const [convIndex, setConvIndex] = useState(0);
 
   useEffect(() => {
+    let currentConv = 0;
     const sequence = async () => {
       setStep(0);
       await new Promise((r) => setTimeout(r, 1500));
@@ -161,10 +178,19 @@ function ChatSimulation() {
       await new Promise((r) => setTimeout(r, 2000));
       setStep(2);
     };
+    
     sequence();
-    const interval = setInterval(sequence, 8000);
+    
+    const interval = setInterval(() => {
+      currentConv = (currentConv + 1) % CONVERSATIONS.length;
+      setConvIndex(currentConv);
+      sequence();
+    }, 8000);
+    
     return () => clearInterval(interval);
   }, []);
+
+  const conv = CONVERSATIONS[convIndex];
 
   return (
     <div className="lg:col-span-2 rounded-2xl border border-border/60 bg-background/40 p-4 space-y-3 relative overflow-hidden group">
@@ -188,45 +214,54 @@ function ChatSimulation() {
         </div>
       </div>
       
-      <div className="relative space-y-2.5 pt-1">
-        <motion.div 
-          initial={{ opacity: 0, x: -10 }} 
-          animate={{ opacity: 1, x: 0 }} 
-          transition={{ duration: 0.5 }}
-          className="bg-card rounded-2xl rounded-tl-sm p-3 text-xs leading-relaxed border border-border/40 w-[90%] shadow-sm"
-        >
-          Oi João! Sentimos sua falta 🍕 Hoje o frete é grátis nas pizzas grandes pra você voltar!
-        </motion.div>
+      {/* Container com altura fixa maior para acomodar textos longos sem sobrepor as bordas */}
+      <div className="relative pt-1 h-[180px] flex flex-col justify-between">
+        <div className="w-full">
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={`out-${convIndex}`}
+              initial={{ opacity: 0, x: -10 }} 
+              animate={{ opacity: 1, x: 0 }} 
+              exit={{ opacity: 0, x: 10 }}
+              transition={{ duration: 0.5 }}
+              className="bg-card rounded-2xl rounded-tl-sm p-3 text-xs leading-relaxed border border-border/40 w-[90%] shadow-sm"
+            >
+              {conv.outbound}
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-        <AnimatePresence mode="wait">
-          {step === 1 && (
-            <motion.div 
-              key="typing"
-              initial={{ opacity: 0, scale: 0.95 }} 
-              animate={{ opacity: 1, scale: 1 }} 
-              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }} 
-              className="flex items-center gap-1.5 text-[10px] text-muted-foreground ml-2 h-6"
-            >
-              <div className="flex gap-1">
-                <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
-                <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.15 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
-                <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.3 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
-              </div>
-              <span className="ml-1">cliente digitando...</span>
-            </motion.div>
-          )}
-          {step === 2 && (
-            <motion.div 
-              key="message"
-              initial={{ opacity: 0, y: 10, scale: 0.95 }} 
-              animate={{ opacity: 1, y: 0, scale: 1 }} 
-              transition={{ type: "spring", stiffness: 100, damping: 15 }}
-              className="bg-primary/20 rounded-2xl rounded-tr-sm p-3 text-xs leading-relaxed ml-auto w-[85%] text-right border border-primary/20 shadow-sm"
-            >
-              Opa 👀 me manda o cardápio, vou pedir!
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="min-h-[56px] flex flex-col justify-end">
+          <AnimatePresence mode="wait">
+            {step === 1 && (
+              <motion.div 
+                key="typing"
+                initial={{ opacity: 0, scale: 0.95 }} 
+                animate={{ opacity: 1, scale: 1 }} 
+                exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }} 
+                className="flex items-center gap-1.5 text-[10px] text-muted-foreground ml-2 pb-2"
+              >
+                <div className="flex gap-1">
+                  <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
+                  <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.15 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
+                  <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.3 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
+                </div>
+                <span className="ml-1">cliente digitando...</span>
+              </motion.div>
+            )}
+            {step === 2 && (
+              <motion.div 
+                key="message"
+                initial={{ opacity: 0, y: 10, scale: 0.95 }} 
+                animate={{ opacity: 1, y: 0, scale: 1 }} 
+                transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                className="bg-primary/20 rounded-2xl rounded-tr-sm p-3 text-xs leading-relaxed ml-auto w-[85%] text-right border border-primary/20 shadow-sm"
+              >
+                {conv.inbound}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       <div className="relative flex items-center justify-between pt-2 mt-2 border-t border-border/40">
