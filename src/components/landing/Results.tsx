@@ -4,8 +4,8 @@ import { Users, DollarSign, Send, TrendingUp, ArrowRight, Target } from "lucide-
 import { Button } from "@/components/ui/button";
 
 export function Results() {
-  const [baseClientes, setBaseClientes] = useState<number>(1000);
-  const [ticketMedio, setTicketMedio] = useState<number>(80);
+  const [baseClientes, setBaseClientes] = useState<number>(0);
+  const [ticketMedio, setTicketMedio] = useState<number>(0);
 
   const taxaRetorno = 0.10;
   const custoPorMensagem = 0.60;
@@ -16,10 +16,16 @@ export function Results() {
   const roiEstimado = custoCampanha > 0 ? faturamentoPotencial / custoCampanha : 0;
 
   const formatCurrency = (val: number) =>
-    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val);
+    val === 0 ? "R$ 0,00" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val);
 
   const formatNumber = (val: number) =>
-    new Intl.NumberFormat("pt-BR").format(val);
+    val === 0 ? "0" : new Intl.NumberFormat("pt-BR").format(val);
+
+  const displayCurrency = (val: number) =>
+    val === 0 ? "R$ --" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val);
+
+  const displayNumber = (val: number) =>
+    val === 0 ? "--" : new Intl.NumberFormat("pt-BR").format(val);
 
   return (
     <section id="simulador" className="py-24 md:py-32 relative">
@@ -123,7 +129,7 @@ export function Results() {
             <div className="rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background p-8 md:p-10 shadow-glow-soft relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
               <p className="text-xl md:text-2xl leading-relaxed text-foreground font-medium relative z-10">
-                Com uma base de <span className="text-primary font-semibold">{formatNumber(baseClientes)}</span> clientes e ticket médio de <span className="text-primary font-semibold">{formatCurrency(ticketMedio)}</span>, uma campanha simples poderia recuperar aproximadamente <span className="text-primary font-semibold text-2xl md:text-3xl bg-primary/10 px-2 py-1 rounded-lg inline-block mx-1 border border-primary/20">{formatNumber(clientesRecuperados)}</span> clientes.
+                Com uma base de <span className="text-primary font-semibold">{displayNumber(baseClientes)}</span> clientes e ticket médio de <span className="text-primary font-semibold">{displayCurrency(ticketMedio)}</span>, uma campanha simples poderia recuperar aproximadamente <span className="text-primary font-semibold text-2xl md:text-3xl bg-primary/10 px-2 py-1 rounded-lg inline-block mx-1 border border-primary/20">{displayNumber(clientesRecuperados)}</span> clientes.
               </p>
               
               <div className="mt-8 pt-6 border-t border-primary/10">
@@ -156,8 +162,8 @@ export function Results() {
                 />
               </div>
               <div className="mt-3 flex justify-between text-xs">
-                <span className="text-muted-foreground">Custo: {formatCurrency(custoCampanha)}</span>
-                <span className="font-medium text-primary">Potencial: {formatCurrency(faturamentoPotencial)}</span>
+                <span className="text-muted-foreground">Custo: {displayCurrency(custoCampanha)}</span>
+                <span className="font-medium text-primary">Potencial: {displayCurrency(faturamentoPotencial)}</span>
               </div>
             </div>
 
@@ -167,7 +173,7 @@ export function Results() {
                 <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
                   <Users className="w-4 h-4 text-primary" /> Clientes que podem voltar
                 </div>
-                <div className="text-3xl font-semibold tracking-tight">{formatNumber(clientesRecuperados)}</div>
+                <div className="text-3xl font-semibold tracking-tight">{displayNumber(clientesRecuperados)}</div>
               </div>
               
               <div className="rounded-2xl border border-border/60 bg-gradient-card p-6 relative overflow-hidden transition-all hover:border-primary/30">
@@ -175,21 +181,21 @@ export function Results() {
                 <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
                   <DollarSign className="w-4 h-4 text-primary" /> Faturamento potencial
                 </div>
-                <div className="text-3xl font-semibold tracking-tight text-gradient-primary">{formatCurrency(faturamentoPotencial)}</div>
+                <div className="text-3xl font-semibold tracking-tight text-gradient-primary">{displayCurrency(faturamentoPotencial)}</div>
               </div>
               
               <div className="rounded-2xl border border-border/60 bg-gradient-card p-6 transition-all hover:border-primary/30">
                 <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
                   <Send className="w-4 h-4 text-primary" /> Custo estimado da campanha
                 </div>
-                <div className="text-3xl font-semibold tracking-tight">{formatCurrency(custoCampanha)}</div>
+                <div className="text-3xl font-semibold tracking-tight">{displayCurrency(custoCampanha)}</div>
               </div>
               
               <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 shadow-glow-soft transition-all">
                 <div className="flex items-center gap-3 text-sm text-primary font-medium mb-3">
                   <TrendingUp className="w-4 h-4" /> ROI estimado
                 </div>
-                <div className="text-3xl font-semibold tracking-tight text-foreground">{roiEstimado.toFixed(1)} vezes</div>
+                <div className="text-3xl font-semibold tracking-tight text-foreground">{baseClientes === 0 ? "--" : roiEstimado.toFixed(1) + " vezes"}</div>
               </div>
             </div>
 

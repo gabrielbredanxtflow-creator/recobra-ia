@@ -4,9 +4,9 @@ const items = [
   ["Campanhas automáticas", "Disparos programados por comportamento e tempo sem pedido."],
   ["Recuperação de clientes inativos", "Reativação de quem não pede há 15, 30 ou 60+ dias."],
   ["Cupons inteligentes", "Ofertas personalizadas para cada perfil de cliente."],
-  ["Segmentação avançada", "Por ticket médio, frequência, produto preferido e região."],
-  ["Dashboard com ROI", "Métricas claras: enviado, recuperado, faturado."],
-  ["Relatórios semanais", "Acompanhe a evolução do seu faturamento recorrente."],
+  ["Segmentação avançada", "Por comportamento, frequência, produto preferido e região."],
+  ["Dashboard de Reativação", "Métricas claras: campanhas, respostas e reengajamento."],
+  ["Relatórios de engajamento", "Acompanhe a evolução do relacionamento com seus clientes."],
   ["Implantação completa", "Configuramos tudo para você. Você só acompanha resultados."],
   ["Suporte dedicado", "Time especialista em food service do seu lado."],
 ];

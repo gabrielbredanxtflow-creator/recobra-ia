@@ -102,10 +102,10 @@ function Bar({ h, active, i }: { h: number; active?: boolean; i: number }) {
 }
 
 const NOTIFICATIONS = [
-  { id: 1, text: "Cliente voltou após 45 dias", time: "agora mesmo", icon: Users },
-  { id: 2, text: "Pedido de R$ 124 aprovado", time: "2 min atrás", icon: DollarSign },
-  { id: 3, text: "Campanha finalizada: 184 retornos", time: "5 min atrás", icon: Check },
-  { id: 4, text: "Nova campanha iniciada", time: "12 min atrás", icon: Activity },
+  { id: 1, text: "Cliente respondeu campanha", time: "agora mesmo", icon: MessageCircle },
+  { id: 2, text: "Novo retorno detectado", time: "2 min atrás", icon: Users },
+  { id: 3, text: "Cupom visualizado", time: "5 min atrás", icon: Activity },
+  { id: 4, text: "Cliente voltou a interagir", time: "12 min atrás", icon: Check },
 ];
 
 function LiveNotifications() {
@@ -152,16 +152,19 @@ function LiveNotifications() {
 
 const CONVERSATIONS = [
   {
-    outbound: "Oi João! Sentimos sua falta 🍕 Hoje o frete é grátis nas pizzas grandes pra você voltar!",
-    inbound: "Opa 👀 me manda o cardápio, vou pedir!"
+    outbound: "🍔 Faz um tempinho que você não pede aqui 😄\n\nLiberamos 15% OFF no seu próximo pedido, válido somente hoje.\n\nAproveita antes que acabe 👇",
+    button: "VER CARDÁPIO",
+    inbound: "Pode deixar que hoje vou pedir 😅"
   },
   {
-    outbound: "Olá Maria! Faz tempo que você não pede nosso hambúrguer artesanal. Quer 15% OFF hoje?",
-    inbound: "Oi! Quero sim, qual é o cupom? 🍔"
+    outbound: "🔥 HOJE TEM PROMOÇÃO ESPECIAL 🔥\n\nNa compra de uma pizza grande, você recebe uma condição exclusiva válida até às 22h 🍕\n\nOferta liberada apenas para clientes da nossa base.",
+    button: "QUERO APROVEITAR",
+    inbound: "Já abriu o cardápio aqui 😂"
   },
   {
-    outbound: "Fala Carlos! Tem novidade no cardápio de sushi. Que tal um combinado hoje com taxa zero?",
-    inbound: "Boa! Estava mesmo com vontade, vou dar uma olhada 🍣"
+    outbound: "😄 Você já pediu com a gente antes… então liberamos FRETE GRÁTIS no seu próximo pedido 🚗💨\n\nVálido somente hoje para clientes selecionados.",
+    button: "PEDIR AGORA",
+    inbound: "Agora vocês me convenceram 👀"
   }
 ];
 
@@ -173,7 +176,7 @@ function ChatSimulation() {
     let currentConv = 0;
     const sequence = async () => {
       setStep(0);
-      await new Promise((r) => setTimeout(r, 1500));
+      await new Promise((r) => setTimeout(r, 2500));
       setStep(1);
       await new Promise((r) => setTimeout(r, 2000));
       setStep(2);
@@ -185,7 +188,7 @@ function ChatSimulation() {
       currentConv = (currentConv + 1) % CONVERSATIONS.length;
       setConvIndex(currentConv);
       sequence();
-    }, 8000);
+    }, 9000);
     
     return () => clearInterval(interval);
   }, []);
@@ -214,19 +217,26 @@ function ChatSimulation() {
         </div>
       </div>
       
-      {/* Container com altura fixa maior para acomodar textos longos sem sobrepor as bordas */}
-      <div className="relative pt-1 h-[180px] flex flex-col justify-between">
+      {/* Container com altura ajustada para acomodar textos longos sem sobrepor as bordas */}
+      <div className="relative pt-1 h-[270px] flex flex-col justify-between">
         <div className="w-full">
           <AnimatePresence mode="wait">
             <motion.div 
               key={`out-${convIndex}`}
-              initial={{ opacity: 0, x: -10 }} 
-              animate={{ opacity: 1, x: 0 }} 
-              exit={{ opacity: 0, x: 10 }}
-              transition={{ duration: 0.5 }}
-              className="bg-card rounded-2xl rounded-tl-sm p-3 text-xs leading-relaxed border border-border/40 w-[90%] shadow-sm"
+              initial={{ opacity: 0, y: 10, filter: "blur(4px)" }} 
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} 
+              exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="bg-card rounded-2xl rounded-tl-sm text-xs leading-relaxed border border-border/40 w-[95%] shadow-sm flex flex-col overflow-hidden"
             >
-              {conv.outbound}
+              <div className="p-3.5 whitespace-pre-wrap text-foreground/90">
+                {conv.outbound}
+              </div>
+              {conv.button && (
+                <div className="border-t border-border/40 py-2.5 text-center text-primary font-medium bg-muted/20 hover:bg-muted/40 transition-colors cursor-default">
+                  {conv.button}
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -242,20 +252,20 @@ function ChatSimulation() {
                 className="flex items-center gap-1.5 text-[10px] text-muted-foreground ml-2 pb-2"
               >
                 <div className="flex gap-1">
-                  <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
-                  <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.15 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
-                  <motion.span animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.3 }} className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full" />
+                  <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-primary/60 rounded-full" />
+                  <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }} className="w-1.5 h-1.5 bg-primary/60 rounded-full" />
+                  <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.4 }} className="w-1.5 h-1.5 bg-primary/60 rounded-full" />
                 </div>
-                <span className="ml-1">cliente digitando...</span>
+                <span className="ml-1 font-medium">cliente digitando...</span>
               </motion.div>
             )}
             {step === 2 && (
               <motion.div 
                 key="message"
-                initial={{ opacity: 0, y: 10, scale: 0.95 }} 
-                animate={{ opacity: 1, y: 0, scale: 1 }} 
+                initial={{ opacity: 0, y: 10, scale: 0.95, filter: "blur(4px)" }} 
+                animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }} 
                 transition={{ type: "spring", stiffness: 100, damping: 15 }}
-                className="bg-primary/20 rounded-2xl rounded-tr-sm p-3 text-xs leading-relaxed ml-auto w-[85%] text-right border border-primary/20 shadow-sm"
+                className="bg-primary/20 rounded-2xl rounded-tr-sm p-3.5 text-xs leading-relaxed ml-auto w-[85%] text-right border border-primary/20 shadow-sm text-foreground/90"
               >
                 {conv.inbound}
               </motion.div>
@@ -320,7 +330,7 @@ export function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm text-muted-foreground">Últimos 30 dias</h3>
-                <p className="text-lg font-semibold text-foreground">Performance da recuperação</p>
+                <p className="text-lg font-semibold text-foreground">Visão geral do engajamento</p>
               </div>
               <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-[oklch(0.8_0.16_155)]/10 border border-[oklch(0.8_0.16_155)]/20 shadow-[0_0_15px_oklch(0.8_0.16_155/0.15)]">
                 <motion.span 
@@ -335,21 +345,21 @@ export function Dashboard() {
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-              <Metric label="Mensagens enviadas" end={12480} delta="+34%" icon={MessageCircle} delay={300} />
-              <Metric label="Clientes recuperados" end={1327} delta="+22%" icon={Users} delay={450} />
-              <Metric label="Faturamento gerado" end={84210} prefix="R$ " delta="+41%" icon={DollarSign} delay={600} />
-              <Metric label="ROI estimado" end={9.4} suffix="x" decimals={1} delta="+1.8x" icon={TrendingUp} delay={750} />
+              <Metric label="Mensagens enviadas" end={12480} delta="campanhas ativas" icon={MessageCircle} delay={300} />
+              <Metric label="Clientes reativados" end={1327} delta="voltaram a responder" icon={Users} delay={450} />
+              <Metric label="Campanhas em execução" end={12} delta="automações ativas" icon={Activity} delay={600} />
+              <Metric label="Taxa de resposta" end={18.4} suffix="%" decimals={1} delta="engajamento da base" icon={TrendingUp} delay={750} />
             </div>
 
             <div className="grid lg:grid-cols-5 gap-3 lg:gap-4">
               <div className="lg:col-span-3 rounded-2xl border border-border/60 bg-background/40 p-5 group hover:border-border transition-colors">
                 <div className="flex items-center justify-between mb-6">
                   <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-                    Faturamento recuperado / semana
+                    Campanhas e reativações nos últimos dias
                   </span>
                   <div className="flex items-center gap-2">
                     <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 4, ease: "linear" }} className="w-3 h-3 rounded-full border-2 border-primary border-t-transparent" />
-                    <span className="text-xs font-medium">R$ 84.210</span>
+                    <span className="text-xs font-medium">Atividade alta</span>
                   </div>
                 </div>
                 <div className="flex items-end gap-2 h-32">

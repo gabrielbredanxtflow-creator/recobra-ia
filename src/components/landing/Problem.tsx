@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
-import { AlertTriangle, Repeat, TrendingDown, Smartphone, Clock, Wallet } from "lucide-react";
+import { AlertTriangle, Repeat, TrendingDown, Smartphone, Clock, Users } from "lucide-react";
 
 const pains = [
-  { icon: Repeat, title: "Cliente compra uma vez e some", desc: "Você gastou para conquistá-lo. Ele pediu, gostou — e nunca mais voltou." },
+  { icon: Repeat, title: "Cliente compra uma vez e some", desc: "Você gastou para conquistá-lo. Ele pediu, gostou e nunca mais voltou." },
   { icon: Smartphone, title: "Dependência refém do iFood", desc: "Comissões altas e clientes que pertencem à plataforma, não a você." },
-  { icon: Wallet, title: "Dinheiro parado na sua base", desc: "Centenas de clientes prontos para voltar — e ninguém está conversando com eles." },
+  { icon: Users, title: "Oportunidade parada na sua base", desc: "Centenas de clientes prontos para voltar e ninguém está conversando com eles." },
   { icon: TrendingDown, title: "Movimento fraco no meio da semana", desc: "Terça e quarta vazias enquanto sua base de clientes está adormecida." },
   { icon: Clock, title: "Cliente esquece do seu restaurante", desc: "Sem reativação, em 60 dias 70% dos clientes não voltam mais." },
-  { icon: AlertTriangle, title: "Sem dados, sem decisão", desc: "Você não sabe quem está sumindo nem quanto está perdendo por mês." },
+  { icon: AlertTriangle, title: "Sem dados, sem decisão", desc: "Você não sabe quem está sumindo nem quantos clientes deixou de recuperar." },
 ];
 
 export function Problem() {
@@ -17,7 +17,7 @@ export function Problem() {
         <div className="max-w-2xl">
           <span className="text-xs uppercase tracking-[0.2em] text-primary font-medium">O problema real</span>
           <h2 className="mt-3 text-3xl md:text-5xl font-semibold tracking-tight text-gradient">
-            O dinheiro que você perde não está no anúncio. Está na sua base.
+            A oportunidade que você perde não está no anúncio. Está na sua base inativa.
           </h2>
           <p className="mt-4 text-muted-foreground text-lg">
             A maioria dos restaurantes investe pesado em aquisição e ignora o ativo mais valioso: os clientes que já compraram.

@@ -14,17 +14,17 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Recobra — Recupere clientes do seu restaurante automaticamente" },
+      { title: "Recobra Reativação automática de clientes para restaurantes" },
       {
         name: "description",
         content:
-          "Recupere clientes pelo WhatsApp, aumente pedidos e faturamento sem depender só do iFood. Sistema híbrido de reativação para restaurantes, deliverys e food service.",
+          "Recupere clientes pelo WhatsApp, aumente o engajamento e a recorrência sem depender só do iFood. Sistema híbrido de reativação para restaurantes e deliverys.",
       },
-      { property: "og:title", content: "Recobra — Mais pedidos. Mais recorrência. Mais faturamento." },
+      { property: "og:title", content: "Recobra Reativação automática. Mais engajamento. Mais recorrência." },
       {
         property: "og:description",
         content:
-          "Recuperação automática de clientes para restaurantes via WhatsApp. ROI médio de 9x.",
+          "Recuperação automática de clientes para restaurantes via WhatsApp. Engajamento ativo e inteligente.",
       },
     ],
   }),

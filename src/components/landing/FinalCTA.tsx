@@ -9,7 +9,7 @@ export function FinalCTA() {
           Quantos clientes antigos estão esquecendo do seu restaurante <span className="text-gradient-primary">hoje?</span>
         </h2>
         <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Receba uma análise gratuita e descubra quanto sua base pode faturar novamente.
+          Receba uma análise gratuita e descubra o potencial de reativação da sua base de clientes.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Button variant="hero" size="xl" asChild>

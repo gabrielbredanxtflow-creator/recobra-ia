@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-import { Search, Send, ShoppingBag, BarChart3 } from "lucide-react";
+import { Search, Send, ShoppingBag, Activity } from "lucide-react";
 
 const steps = [
   { icon: Search, title: "Sistema identifica clientes inativos", desc: "Conectamos sua base e segmentamos quem não pede há 15, 30 ou 60 dias." },
   { icon: Send, title: "Campanhas automáticas pelo WhatsApp", desc: "Mensagens personalizadas, com cupons e ofertas, enviadas no momento certo." },
-  { icon: ShoppingBag, title: "Clientes retornam a comprar", desc: "Recuperação real, com pedidos entrando direto no seu canal — sem comissão de marketplace." },
-  { icon: BarChart3, title: "Dashboard mostra ROI e faturamento", desc: "Você acompanha em tempo real quanto foi reativado e quanto entrou no caixa." },
+  { icon: ShoppingBag, title: "Clientes voltam a interagir", desc: "A base volta a se engajar com a sua marca, retomando o relacionamento e o consumo." },
+  { icon: Activity, title: "Acompanhe reativações e respostas", desc: "Você visualiza campanhas ativas, engajamento e a atividade da sua base de clientes." },
 ];
 
 export function HowItWorks() {
@@ -16,7 +16,7 @@ export function HowItWorks() {
         <div className="text-center max-w-2xl mx-auto">
           <span className="text-xs uppercase tracking-[0.2em] text-primary font-medium">Como funciona</span>
           <h2 className="mt-3 text-3xl md:text-5xl font-semibold tracking-tight text-gradient">
-            Quatro passos. Resultados em dias, não meses.
+            Quatro passos. Reativações em dias, não meses.
           </h2>
         </div>
 

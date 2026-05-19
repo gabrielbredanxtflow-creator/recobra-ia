@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Calculator } from "lucide-react";
+import { ArrowRight, Sparkles, Activity } from "lucide-react";
 import { Dashboard } from "./Dashboard";
 
 export function Hero() {
@@ -37,7 +37,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
         >
-          Recupere clientes automaticamente pelo WhatsApp, aumente pedidos e faturamento sem depender só do iFood.
+          Recupere clientes automaticamente pelo WhatsApp, aumente a recorrência e o relacionamento sem depender só do iFood.
         </motion.p>
 
         <motion.div
@@ -54,8 +54,8 @@ export function Hero() {
           </Button>
           <Button variant="soft" size="lg" asChild>
             <a href="#simulador">
-              <Calculator className="w-4 h-4" />
-              Simular retorno
+              <Activity className="w-4 h-4" />
+              Ver potencial
             </a>
           </Button>
         </motion.div>
