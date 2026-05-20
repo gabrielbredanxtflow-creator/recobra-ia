@@ -28,7 +28,7 @@ export function Hero() {
         >
           Seus clientes já compraram de você.
           <br />
-          <span className="text-gradient-primary">O problema é que eles nunca mais voltam.</span>
+          <span className="text-gradient-primary">A maioria deles só precisa ser lembrada.</span>
         </motion.h1>
 
         <motion.p
@@ -37,7 +37,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
         >
-          Recupere clientes automaticamente pelo WhatsApp, aumente a recorrência e o relacionamento sem depender só do iFood.
+          Recupere clientes automaticamente pelo WhatsApp, aumente a recorrência e o relacionamento sem depender só do iFood e Tráfego.
         </motion.p>
 
         <motion.div
