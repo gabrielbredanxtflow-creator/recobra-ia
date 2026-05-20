@@ -75,7 +75,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.35 }}
           className="mt-16 relative"
         >
-          <div className="absolute -inset-x-20 -inset-y-10 bg-hero-glow blur-2xl pointer-events-none" />
+          <div className="absolute -inset-x-4 md:-inset-x-20 -inset-y-10 bg-hero-glow blur-2xl pointer-events-none" />
           <div className="relative">
             <Dashboard />
           </div>

@@ -37,7 +37,7 @@ export function MouseOrb() {
   return (
     <div
       ref={orbRef}
-      className="fixed top-0 left-0 w-48 h-48 rounded-full pointer-events-none z-0"
+      className="fixed top-0 left-0 w-48 h-48 rounded-full pointer-events-none z-0 hidden md:block"
       style={{
         background: "radial-gradient(circle, oklch(0.72 0.18 50 / 0.18), transparent 70%)",
         filter: "blur(32px)",

@@ -98,6 +98,10 @@
   * {
     border-color: var(--color-border);
   }
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px; /* Ajuste para a altura do seu menu */
