@@ -30,7 +30,7 @@ export function Results() {
   return (
     <section id="simulador" className="py-24 md:py-32 relative overflow-hidden">
       {/* Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[800px] md:h-[800px] rounded-full bg-primary/5 blur-[80px] md:blur-[120px] pointer-events-none" />
       
       <div className="max-w-7xl mx-auto px-6 relative">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
@@ -48,9 +48,9 @@ export function Results() {
                 Simule quanto seu restaurante poderia recuperar ativando clientes antigos pelo WhatsApp.
               </p>
             </div>
-
-            <div className="space-y-5 rounded-3xl border border-border/70 bg-gradient-card backdrop-blur-xl p-6 md:p-8 shadow-elegant relative overflow-hidden">
-              <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
+ 
+            <div className="space-y-5 rounded-3xl border border-border/70 bg-gradient-card backdrop-blur-xl p-6 md:p-8 shadow-elegant relative overflow-hidden isolate">
+              <div className="absolute -top-24 -right-24 w-32 h-32 md:w-48 md:h-48 rounded-full bg-primary/20 blur-2xl md:blur-3xl pointer-events-none" />
               
               <div>
                 <label className="block text-sm font-medium mb-2 text-foreground">
@@ -72,7 +72,7 @@ export function Results() {
                   />
                 </div>
               </div>
-
+ 
               <div>
                 <label className="block text-sm font-medium mb-2 text-foreground">
                   Qual é o ticket médio do seu pedido?
@@ -93,7 +93,7 @@ export function Results() {
                   />
                 </div>
               </div>
-
+ 
               <div className="pt-2">
                 <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-start gap-3">
                   <Target className="w-5 h-5 text-primary shrink-0 mt-0.5" />
@@ -108,7 +108,7 @@ export function Results() {
                 </div>
               </div>
             </div>
-
+ 
             <div className="hidden lg:block">
               <Button variant="hero" size="xl" className="w-full group" asChild>
                 <a href="https://wa.me/5547989128119?text=Ol%C3%A1!%20Vi%20o%20site%20da%20Recobra%20e%20quero%20receber%20uma%20an%C3%A1lise%20gr%C3%A1tis%20do%20meu%20restaurante." target="_blank" rel="noopener noreferrer">
@@ -121,13 +121,13 @@ export function Results() {
               </p>
             </div>
           </div>
-
+ 
           {/* Lado Direito: Resultados */}
           <div className="lg:col-span-7 space-y-4">
             
             {/* Card de Destaque */}
-            <div className="rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background p-8 md:p-10 shadow-glow-soft relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
+            <div className="rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background p-8 md:p-10 shadow-glow-soft relative overflow-hidden isolate">
+              <div className="absolute top-0 right-0 w-32 h-32 md:w-64 md:h-64 bg-primary/10 rounded-full blur-[50px] md:blur-[80px] pointer-events-none" />
               <p className="text-xl md:text-2xl leading-relaxed text-foreground font-medium relative z-10">
                 Com uma base de <span className="text-primary font-semibold">{displayNumber(baseClientes)}</span> clientes e ticket médio de <span className="text-primary font-semibold">{displayCurrency(ticketMedio)}</span>, uma campanha simples poderia recuperar aproximadamente <span className="text-primary font-semibold text-2xl md:text-3xl bg-primary/10 px-2 py-1 rounded-lg inline-block mx-1 border border-primary/20">{displayNumber(clientesRecuperados)}</span> clientes.
               </p>
